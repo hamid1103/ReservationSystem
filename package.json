@@ -1,5 +1,7 @@
 {
   "devDependencies": {
-    "@microsoft/microsoft-graph-client": "^3.0.4"
+    "@microsoft/microsoft-graph-client": "^3.0.4",
+    "@microsoft/microsoft-graph-types": "^2.25.0",
+    "mysql": "^2.18.1"
   }
 }
