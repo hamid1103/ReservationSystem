@@ -34,7 +34,8 @@
 </div>
 
     <!--section right of form-->
-
+    <div class="container-lg w-25 border border-dark p-3 mt-3">
+    </div>
 
 </section>
 
