@@ -1,0 +1,10 @@
+.tdiv{
+    background-color: ghostwhite;
+    border: gold solid 3px;
+    margin: 1vh 0 1vh 0;
+    padding: 1vh;
+}
+
+.rstdiv{
+    border-top: black solid 0.5vh;
+}

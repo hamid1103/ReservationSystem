@@ -5,13 +5,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reqnumber = $_POST['number'];
     $reqsubject = $_POST['subject'];
     $reqdate = $_POST['date'];
+    $reqtime = $_POST['time'];
     $resData = array(
         "name" => $reqname,
         "mail" => $reqemail,
         "number" => $reqnumber,
         "subject" => $reqsubject,
-        "date" => $reqdate
-
+        "date" => $reqdate,
+        "time" => $reqtime,
     );
 }else{
     $msg = 'Error: No query. Please make sure to use the form located in the homepage';
@@ -38,9 +39,9 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-$sql = "INSERT INTO reservaties (date, email, number, subject, customer) VALUES (?,?,?,?,?)";
+$sql = "INSERT INTO reservaties (date, time, email, number, subject, customer) VALUES (?,?,?,?,?,?)";
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$reqdate, $reqemail, $reqnumber, $reqsubject, $reqname]);
+$stmt->execute([$reqdate, $reqtime, $reqemail, $reqnumber, $reqsubject, $reqname]);
 
 //send mail shit - Implement later. We can use a google account with settings or run mercury mail on the server
 /*
@@ -85,7 +86,7 @@ if(mail($to, $subject, $message, $headers)){
             <p class="subtitle">
                 <?php
                 echo "Name: " . $resData['name'] . "<br>";
-                echo "Date and Time: " . $resData['date'] . "<br>";
+                echo "Date and Time: " . $resData['date'] . "   " . $resData['time'] . "<br>";
                 echo "Email: " . $resData['mail'] . "<br>";
                 echo "Mobile Number: " . $resData['number'] . "<br>";
                 echo "Subject: " . $resData['subject'] . "<br>";

@@ -50,6 +50,7 @@ $results = $stmt->fetchAll();*/
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Science Planner - Admin page</title>
     <link rel="stylesheet" href="css/mystyles.css">
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 <section class="is-flex is-flex-direction-row is-align-content-center is-justify-content-center">
@@ -82,24 +83,42 @@ $results = $stmt->fetchAll();*/
                     $day = $ndt->format('Y') . "-".$ndt->format('m')."-".$ndt->format('d');
                     //mysql> SELECT CURDATE();
                     //        -> '2008-06-13'
-                    $sql = "SELECT * FROM reservaties WHERE YEARWEEK(`date`, 1) = YEARWEEK('$day', 1); ";
+                    //$sql = "SELECT * FROM reservaties WHERE YEARWEEK(`date`, 1) = YEARWEEK('$day', 1); ";
+                    $sql = "SELECT * FROM reservaties WHERE date = '$day'";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                     $results = $stmt->fetchAll();
-                    echo $sql;
                 foreach ($results as $result){
                     echo "<div class='tdiv'>";
-                    echo $result['id'];
-                    echo "<br>";
-                    echo $result['date'];
-                    echo "<br>";
-                    echo $result['email'];
-                    echo "<br>";
-                    echo $result['number'];
-                    echo "<br>";
-                    echo $result['subject'];
-                    echo "<br>";
-                    echo $result['customer'];
+                        echo "<div class='rstdiv'>";
+                        echo "SQL ID: " . $result['id'];
+                        echo "</div>";
+                        echo "<br>";
+
+                        echo "<div class='rstdiv'>";
+                        echo $result['date'] . " " . $result['time'];
+                        echo "</div>";
+                        echo "<br>";
+
+                        echo "<div class='rstdiv'>";
+                        echo $result['email'];
+                        echo "</div>";
+                        echo "<br>";
+
+                        echo "<div class='rstdiv'>";
+                        echo $result['number'];
+                        echo "</div>";
+                        echo "<br>";
+
+                        echo "<div class='rstdiv'>";
+                        echo $result['subject'];
+                        echo "</div>";
+                        echo "<br>";
+
+                        echo "<div class='rstdiv'>";
+                        echo $result['customer'];
+                        echo "</div>";
+
                     echo "</div>";
                 }
 

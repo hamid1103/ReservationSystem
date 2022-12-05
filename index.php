@@ -59,7 +59,11 @@ try {
         </div>
         <div class="m-3">
             <label for="InputDate" class="form-label">Datum</label>
-            <input type="datetime-local" id="InputDate" class="form-control" name="date">
+            <input type="date" id="InputDate" class="form-control" name="date">
+        </div>
+        <div class="m-3">
+            <label for="InputTime" class="form-label">Tijd</label>
+            <input type="time" id="InputTime" class="form-control" name="time">
         </div>
 
         <input type="submit" name="submit" id="submit">
