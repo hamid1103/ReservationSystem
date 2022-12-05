@@ -80,37 +80,33 @@ $results = $stmt->fetchAll();*/
                     echo "<td>";
 
                     $day = $ndt->format('Y') . "-".$ndt->format('m')."-".$ndt->format('d');
-                    $sql = "SELECT * FROM reservaties WHERE date LIKE " . $day;
+                    //mysql> SELECT CURDATE();
+                    //        -> '2008-06-13'
+                    $sql = "SELECT * FROM reservaties WHERE YEARWEEK(`date`, 1) = YEARWEEK('$day', 1); ";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                     $results = $stmt->fetchAll();
                     echo $sql;
-                    echo $results;
-                /*foreach ($results as $result){
-                    echo "<div clas='tdiv'>";
-                    echo $result;
+                foreach ($results as $result){
+                    echo "<div class='tdiv'>";
+                    echo $result['id'];
+                    echo "<br>";
+                    echo $result['date'];
+                    echo "<br>";
+                    echo $result['email'];
+                    echo "<br>";
+                    echo $result['number'];
+                    echo "<br>";
+                    echo $result['subject'];
+                    echo "<br>";
+                    echo $result['customer'];
                     echo "</div>";
-                }*/
+                }
 
                     echo "</td>";
-                    //echo "<td>" . $ndt->format('l') . "<br>" . $ndt->format('d M Y') . "</td>\n";
                     $ndt->modify('+1 day');
                 } while ($nweek == $ndt->format('W'));
                 ?>
-
-                <!--<td>
-                    //<//? //php
-/*                        echo "<div class='tdiv'>";
-                            //add new div that represents appointments
-                    $day = $ndt-> format('d M Y');
-                    $sql = "SELECT * FROM reservaties WHERE date LIKE " . $day;
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute();
-                    $results = $stmt->fetchAll();
-                        echo "</div>";
-                    */? //>
-                </td>-->
-
             </tr>
         </table>
     </div>
