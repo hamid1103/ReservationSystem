@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 //Setup MySQL Connection
 $host = 'localhost';
 $user = 'root';
@@ -32,6 +32,85 @@ try {
     <link rel="stylesheet" href="css/mystyles.css">
 </head>
 <body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+
+        <?php
+        if (isset($_SESSION['loggedin'])) {
+            if ($_SESSION['name'] == 'admin') {?>
+            <!--User icon-->
+            <a class="navbar-item" href="/admin.php">
+                <p class="title">
+                    Admin
+                </p>
+            </a>
+        <?php } else{ ?>
+                <!--User icon-->
+                <a class="navbar-item">
+                    <p class="title">
+                        <?= $_SESSION['name']?>
+                    </p>
+                </a>
+        <?php } } ?>
+
+
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item">
+                Home
+            </a>
+
+            <a class="navbar-item">
+                Documentation
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    More
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a class="navbar-item">
+                        About
+                    </a>
+                    <a class="navbar-item">
+                        Jobs
+                    </a>
+                    <a class="navbar-item">
+                        Contact
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item">
+                        Report an issue
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-primary">
+                        <strong>Sign up</strong>
+                    </a>
+                    <a class="button is-light">
+                        Log in
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
 <section class="is-flex is-flex-direction-row is-align-items-center is-justify-content-center">
     <!--Section left of form-->
     <div class="container p-3 mt-3">
