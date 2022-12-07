@@ -4,3 +4,6 @@ Goals:
 Syncs with outlook calendar.
   - Adds appointments to calendar
   - Prevents double booking
+
+NOTICE TO SELF:
+DO NOT FORGET TO PUT THE API KEYS IN A FILE AND IGNORE SAID FILE IN .gitignore
