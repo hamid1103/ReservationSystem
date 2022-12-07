@@ -43,8 +43,10 @@ $sql = "INSERT INTO reservaties (date, time, email, number, subject, customer) V
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$reqdate, $reqtime, $reqemail, $reqnumber, $reqsubject, $reqname]);
 
-//send mail shit - Implement later. We can use a google account with settings or run mercury mail on the server
+//send mail shit - Implement later. We can use a google account or via ms graph or via some email helper
 /*
+ * //The mail that's send will contain a file for adding reservation to own digital agenda and a link that will allow
+ * // the customer to change/cancel their reservation
 $to = $reqemail;
 $from = 'sender@email.com';
 $fromName = 'ReservatieSysteem';

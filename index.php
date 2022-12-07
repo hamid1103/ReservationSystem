@@ -1,4 +1,5 @@
 <?php
+//start session (with this we can use login stuff
 session_start();
 //Setup MySQL Connection
 $host = 'localhost';
@@ -99,10 +100,7 @@ try {
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-primary">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a class="button is-light">
+                    <a class="button is-light" href="login.php">
                         Log in
                     </a>
                 </div>
