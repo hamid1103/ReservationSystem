@@ -100,6 +100,9 @@ try {
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
+                    <a class="button is-primary" href="logout.php">
+                        Logout
+                    </a>
                     <a class="button is-light" href="login.php">
                         Log in
                     </a>
