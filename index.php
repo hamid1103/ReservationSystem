@@ -41,7 +41,7 @@ try {
         if (isset($_SESSION['loggedin'])) {
             if ($_SESSION['name'] == 'admin') {?>
             <!--User icon-->
-            <a class="navbar-item" href="/admin.php">
+            <a class="navbar-item" href="admin.php">
                 <p class="title">
                     Admin
                 </p>
