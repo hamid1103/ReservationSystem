@@ -99,8 +99,6 @@ if(mail($to, $subject, $message, $headers)){
 
     <!--Middle-->
     <div class="container-lg w-25 border border-dark p-3 mt-3">
-
-
         <div class="has-text-centered">
             <p class="title">
                 Confirmation of reservation data.

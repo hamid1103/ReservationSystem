@@ -130,6 +130,11 @@ try {
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+            <div id="passwordHelp" class="form-text">This is the password you want to use for changing or cancelling your reservations.</div>
+        </div>
+        <div class="mb-3">
             <label for="number" class="form-label">Mobile Number</label>
             <input type="number" class="form-control" id="number" name="number">
         </div>
