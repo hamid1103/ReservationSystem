@@ -65,7 +65,7 @@ try {
         <?php
             if ($_SESSION['name'] == 'admin') {?>
                 <!--User icon-->
-                <a class="navbar-item" href=".dmin.php">
+                <a class="navbar-item" href="admin.php">
                     <p class="title">
                         Admin
                     </p>
