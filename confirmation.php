@@ -39,9 +39,12 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+//Make reservation into db
 $sql = "INSERT INTO reservaties (date, time, email, number, subject, customer) VALUES (?,?,?,?,?,?)";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$reqdate, $reqtime, $reqemail, $reqnumber, $reqsubject, $reqname]);
+
+//Check if an account with email already exists
 
 //send mail shit - Implement later. We can use a google account or via ms graph or via some email helper
 /*
@@ -65,7 +68,6 @@ if(mail($to, $subject, $message, $headers)){
     echo 'Email sending failed.';
 }
 */
-
 
 ?>
 
