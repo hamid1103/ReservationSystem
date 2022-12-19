@@ -4,6 +4,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reqemail = $_POST['email'];
     $reqnumber = $_POST['number'];
     $reqsubject = $_POST['subject'];
+    $reqpassword = $_POST['password'];
     $reqdate = $_POST['date'];
     $reqtime = $_POST['time'];
     $resData = array(
@@ -45,7 +46,27 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$reqdate, $reqtime, $reqemail, $reqnumber, $reqsubject, $reqname]);
 
 //Check if an account with email already exists
+//prepare query (USING PDO)
+$sth = $pdo->prepare("SELECT * FROM accounts WHERE username = ?");
+//execute query
+$sth->bindParam('s', $reqemail);
+$sth->execute();
+//get all rows and store into $results
+$results = $sth->fetchAll();
+if($results > 0){
+    //IF account exists
+    //for now nothing
+    echo "Found a matching account";
+}else{
+    echo "Making a account with " . $reqemail;
+    //If accoune does not exist(else)
+    //encrypt password
+    $encpassword = password_hash($reqpassword, PASSWORD_DEFAULT);
+    //make account
+    $sth = $pdo->prepare("INSERT INTO accounts (username, email, password) VALUES (?, ?, ?)");
+    $sth->execute([$reqemail, $reqemail, $encpassword]);
 
+}
 //send mail shit - Implement later. We can use a google account or via ms graph or via some email helper
 /*
  * //The mail that's send will contain a file for adding reservation to own digital agenda and a link that will allow

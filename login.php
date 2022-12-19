@@ -24,7 +24,7 @@
             <h1>Login</h1>
             <form action="authenticate.php" method="post">
                 <label for="username">
-                    <i class="fas fa-user"></i>
+
                 </label>
                 <input type="text" name="username" placeholder="Username" id="username" required>
                 <label for="password">
