@@ -50,7 +50,7 @@ try {
                 <!--User icon-->
                 <a class="navbar-item">
                     <p class="title">
-                        <?= $_SESSION['name']?>
+                        <?= $_SESSION['fullname']?>
                     </p>
                 </a>
         <?php } } ?>

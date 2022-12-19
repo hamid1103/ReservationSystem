@@ -167,7 +167,15 @@ try {
                     //mysql> SELECT CURDATE();
                     //        -> '2008-06-13'
                     //$sql = "SELECT * FROM reservaties WHERE YEARWEEK(`date`, 1) = YEARWEEK('$day', 1); ";
-                    $sql = "SELECT * FROM reservaties WHERE date = '$day'";
+
+                    /*$query = "SELECT reservaties.*, accounts.username as username FROM reservaties
+                        LEFT JOIN accounts ON accounts.id = reservaties.email_id
+                        WHERE products.date ='$day'";*/
+
+                    //$sql = "SELECT * FROM reservaties WHERE date = '$day'";
+                    $sql = "SELECT reservaties.*, accounts.email as email FROM reservaties
+                        LEFT JOIN accounts ON accounts.id = reservaties.email_id
+                        WHERE reservaties.date ='$day'";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                     $results = $stmt->fetchAll();

@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }else{
     $msg = 'Error: No query. Please make sure to use the form located in the homepage';
 }
+//front end php vars
+$msg = '';
 
 //Setup MySQL Connection
 $host = 'localhost';
@@ -40,32 +42,51 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-//Make reservation into db
-$sql = "INSERT INTO reservaties (date, time, email, number, subject, customer) VALUES (?,?,?,?,?,?)";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([$reqdate, $reqtime, $reqemail, $reqnumber, $reqsubject, $reqname]);
+
 
 //Check if an account with email already exists
 //prepare query (USING PDO)
-$sth = $pdo->prepare("SELECT * FROM accounts WHERE username = ?");
-//execute query
-$sth->bindParam('s', $reqemail);
-$sth->execute();
+$sth = $pdo->prepare("SELECT * FROM accounts WHERE email = ?");
+$sth->execute([$reqemail]);
 //get all rows and store into $results
 $results = $sth->fetchAll();
-if($results > 0){
+
+if($sth->rowCount() == 1){
     //IF account exists
     //for now nothing
-    echo "Found a matching account";
+    echo "Found a matching account for ". $reqemail;
+    //get account email_id
+    echo $sth->rowCount();
+    $email_id = $results[0]['id'];
+    echo $email_id;
+
+    //TODO: password check
+    //"This account already exists, and your password does not match"
+
+    //Make reservation into db
+    $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
 }else{
     echo "Making a account with " . $reqemail;
     //If accoune does not exist(else)
     //encrypt password
     $encpassword = password_hash($reqpassword, PASSWORD_DEFAULT);
     //make account
-    $sth = $pdo->prepare("INSERT INTO accounts (username, email, password) VALUES (?, ?, ?)");
-    $sth->execute([$reqemail, $reqemail, $encpassword]);
+    $sth = $pdo->prepare("INSERT INTO accounts (id, username, email, password, fullname) VALUES (NULL, ?, ?, ?, ?)");
+    $sth->execute([$reqemail, $reqemail, $encpassword, $reqname]);
 
+    //get emailid
+    $email_id_req = $pdo->prepare("SELECT * FROM accounts WHERE email = ?");
+    $email_id_req->execute([$reqemail]);
+    $results = $email_id_req->fetchAll();
+    $email_id = $results[0]['id'];
+
+    //Make reservation into db
+    $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
+    $msg = "We made an account for you! Use your provided email and password!";
 }
 //send mail shit - Implement later. We can use a google account or via ms graph or via some email helper
 /*
@@ -127,7 +148,9 @@ if(mail($to, $subject, $message, $headers)){
                 Confirmation of reservation data.
             </p>
             <p class="subtitle">
-                Your reservation has been succesfully made.
+                <?php
+                echo $msg;
+                ?>
             </p>
         </div>
     </div>
