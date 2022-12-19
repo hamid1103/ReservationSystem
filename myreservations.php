@@ -5,9 +5,9 @@ session_start();
 if (!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit;
-    //If user = not admin redirect to the login page...
 }
 
+$user_id = $_SESSION['id'];
 
 $dt = new DateTime;
 $ndt = new DateTime();
@@ -71,7 +71,7 @@ try {
             <!--User icon-->
             <a class="navbar-item">
                 <p class="title">
-                    <?= $_SESSION['name']?>
+                    <?= $_SESSION['fullname']?>
                 </p>
             </a>
         <?php } ?>
@@ -172,17 +172,12 @@ try {
                     //$sql = "SELECT * FROM reservaties WHERE date = '$day'";
                     $sql = "SELECT reservaties.*, accounts.email as email FROM reservaties
                         LEFT JOIN accounts ON accounts.id = reservaties.email_id
-                        WHERE reservaties.date ='$day'";
+                        WHERE reservaties.date ='$day' AND reservaties.email_id = $user_id";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                     $results = $stmt->fetchAll();
                     foreach ($results as $result){
-                        echo "<div class='tdiv'>";
-                        echo "<div class='rstdiv'>";
-                        echo "SQL ID: " . $result['id'];
-                        echo "</div>";
-                        echo "<br>";
-
+                        
                         echo "<div class='rstdiv'>";
                         echo $result['date'] . " " . $result['time'];
                         echo "</div>";

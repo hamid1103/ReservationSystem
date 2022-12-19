@@ -70,8 +70,8 @@ try {
                 Home
             </a>
 
-            <a class="navbar-item">
-                Documentation
+            <a class="navbar-item" href="myreservations.php">
+                My Reservations
             </a>
 
             <div class="navbar-item has-dropdown is-hoverable">
