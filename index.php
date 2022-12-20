@@ -1,4 +1,6 @@
 <?php
+$loggedin = false;
+
 //start session (with this we can use login stuff
 session_start();
 //Setup MySQL Connection
@@ -39,6 +41,7 @@ try {
 
         <?php
         if (isset($_SESSION['loggedin'])) {
+            $loggedin = true;
             if ($_SESSION['name'] == 'admin') {?>
             <!--User icon-->
             <a class="navbar-item" href="admin.php">
@@ -124,6 +127,7 @@ try {
             <label for="fullname" class="form-label">Full Name</label>
             <input type="text" class="form-control" id="fullname" name="fullname">
         </div>
+        <?php if($loggedin == false) {?>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="email" name="email">
@@ -134,6 +138,7 @@ try {
             <input type="password" class="form-control" id="password" name="password">
             <div id="passwordHelp" class="form-text">This is the password you want to use for changing or cancelling your reservations.</div>
         </div>
+        <?php } ?>
         <div class="mb-3">
             <label for="number" class="form-label">Mobile Number</label>
             <input type="number" class="form-control" id="number" name="number">

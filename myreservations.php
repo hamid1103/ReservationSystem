@@ -165,10 +165,6 @@ try {
                     //        -> '2008-06-13'
                     //$sql = "SELECT * FROM reservaties WHERE YEARWEEK(`date`, 1) = YEARWEEK('$day', 1); ";
 
-                    /*$query = "SELECT reservaties.*, accounts.username as username FROM reservaties
-                        LEFT JOIN accounts ON accounts.id = reservaties.email_id
-                        WHERE products.date ='$day'";*/
-
                     //$sql = "SELECT * FROM reservaties WHERE date = '$day'";
                     $sql = "SELECT reservaties.*, accounts.email as email FROM reservaties
                         LEFT JOIN accounts ON accounts.id = reservaties.email_id
@@ -177,7 +173,8 @@ try {
                     $stmt->execute();
                     $results = $stmt->fetchAll();
                     foreach ($results as $result){
-                        
+                        echo "<a href='details.php?id=".$result['id']."'>";
+                        echo "<div class='tdiv'>";
                         echo "<div class='rstdiv'>";
                         echo $result['date'] . " " . $result['time'];
                         echo "</div>";
@@ -203,6 +200,7 @@ try {
                         echo "</div>";
 
                         echo "</div>";
+                        echo "</a>";
                     }
 
                     echo "</td>";
