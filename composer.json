@@ -4,6 +4,7 @@
         "vlucas/phpdotenv": "^5.5",
         "league/oauth2-client": "^2.6",
         "guzzlehttp/guzzle": "^7.5",
-        "thenetworg/oauth2-azure": "^2.1"
+        "thenetworg/oauth2-azure": "^2.1",
+      "ext-curl": "*"
     }
 }

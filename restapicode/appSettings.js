@@ -6,8 +6,10 @@ const settings = {
     'graphUserScopes': [
         'user.read',
         'mail.read',
-        'mail.send'
+        'mail.send',
+        'Calendars.ReadWrite'
     ]
 };
 
 module.exports = settings;
+console.log(settings);
