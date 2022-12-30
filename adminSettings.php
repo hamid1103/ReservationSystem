@@ -42,21 +42,33 @@ function callAPI($method, $url, $data){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Science Planner</title>
     <link rel="stylesheet" href="css/mystyles.css">
+    <script src="https://elements.cronofy.com/js/CronofyElements.v1.52.5.js"></script>
 </head>
 <body>
 
-<button class="button is-primary">
-    Initialize MS Graph
-</button>
 <?php
 
-$get_data = callAPI('GET', 'http://localhost:3000/authms', false);
+$get_data = callAPI('GET', 'http://localhost:3000/getEnv', false);
 $response = json_decode($get_data, true);
 
-echo $response;
-
-
 ?>
+
+<form method="post" action="http://localhost:3000/updatePost" class="is-flex is-flex-direction-column">
+    <label for="client_id">Client_ID</label>
+    <input type="text" name="client_id" id="client_id" value="<?= $response['clientId'] ?>">
+
+    <label for="client_secret">Client_Secret</label>
+    <input type="text" name="client_secret" id="client_secret" value="<?= $response['clientSecret'] ?>">
+
+    <label for="sub">Sub</label>
+    <input type="text" name="sub" id="sub" value="<?= $response['sub'] ?>">
+
+    <label for="dataCenter">Data Center ID</label>
+    <input type="text" name="dataCenter" id="dataCenter" value="<?= $response['dataCenter'] ?>">
+
+    <label for="accessToken">Access Token</label>
+    <input type="text" name="accessToken" id="accessToken" value="<?= $response['accessToken'] ?>" >
+</form>
 
 </body>
 </html>
