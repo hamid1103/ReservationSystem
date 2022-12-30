@@ -3,10 +3,19 @@ Apache server: 80, 443
 MySql server: 3306
 */
 
+const https = require('https');
+const axios = require('axios');
+const FormData = require('form-data');
 //stuff from MS graph
 /*const readline = require('readline-sync');
 const graphHelper = require('./graphHelper');*/
-const settings = require('./appSettings');
+const dontenv = require('dotenv').config()
+
+
+const clientId = process.env.CLIENT_ID;
+const tenantId = process.env.TENANT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const scopes = process.env.GRAPH_USER_SCOPES;
 
 const request = require('request');
 
@@ -19,14 +28,6 @@ const cors = require("cors");
 const express = require("express");
 const mysql = require("mysql");
 
-const Cronofy = require("cronofy")
-
-const cronofyClient = new Cronofy({
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET,
-    data_center: process.env.DATA_CENTER
-});
-
 const app = express();
 app.use(express.json());
 
@@ -34,26 +35,93 @@ app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
 
-app.get("/", async (req, res) => {
-    // Extract the "code" from the page's query string:
-    const codeFromQuery = req.query.code;
+//what an auth req should look like
+/*https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+?client_id=6731de76-14a6-49ae-97bc-6eba6914391e
+&response_type=code
+&redirect_uri=http%3A%2F%2Flocalhost%2Fmyapp%2F
+&response_mode=query
+&scope=offline_access%20user.read%20mail.read
+&state=12345*/
+app.get("/msAuth", async(req, res) => {
+    res.redirect("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?" +
+        "client_id=" + clientId
+        +
+        "&response_type=code"
+        +
+        "&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Ftoken"
+        +
+        "&response_mode=query"
+        +
+        "&scope=offline_access%20user.read%20mail.read"
+        +
+        "&state=12345"
+    )
 
-    if (codeFromQuery) {
-        const codeResponse = await cronofyClient.requestAccessToken({
-            client_id: process.env.CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
-            grant_type: "authorization_code",
-            code: codeFromQuery,
-            redirect_uri: "http://localhost/ReservationSystem/adminSettings.php"
-        }).catch((err) => {
-            console.error(err);
-        });
+})
 
-        console.log(codeResponse);
+//successfull response
+/*GET https://localhost/myapp/?
+code=M0ab92efe-b6fd-df08-87dc-2c6500a7f84d
+&state=12345*/
+
+//Error response
+/*http://localhost:3000/token1?error=invalid_request
+&error_description=Proof%20Key%20for%20Code%20Exchange%20is%20required%20for%20cross-origin%20authorization%20code%20redemption.
+&state=12345*/
+
+
+app.get("/token", async (req, res) =>
+{
+    //error handeling
+    let error = req.query.error;
+    let errdesc = req.query.error_description;
+    if(error == undefined){
+
+    }else{
+       return res.send(errdesc + "\n" + clientId)
     }
 
-    // ...template rendering
-});''
+    let authCode = req.query.code;
+    let state = req.query.state;
+    //extra check
+    if(authCode == undefined){
+        return res.send("Something went wrong. Authcode undefined")
+    }else{
+        //Successfully got AuthCode
+        const AuthSettings = {
+            'AuthCode': authCode,
+        };
+
+        module.exports = AuthSettings;
+        //res.send(authCode);
+        res.redirect("/reqToken")
+    }
+})
+
+app.get("/reqToken", async (req, res) =>{
+    //Set to form data cuz microsoft does dumb shit
+    const bodyFormData = new FormData();
+    bodyFormData.append('client_id', clientId);
+    bodyFormData.append('grant_type', 'authorization_code');
+    bodyFormData.append('scope', scopes);
+    bodyFormData.append('code', auth);
+    bodyFormData.append('redirect_uri', 'http://localhost:3000/getToken');
+
+
+    axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', bodyFormData)
+        .then(function (response) {
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+})
+
+app.get
+
 app.post("/add", async (req, res) => {
     const arraycont = req.body;
     console.log(arraycont);
@@ -105,10 +173,7 @@ app.post("/comments", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-    return res.render("home", {
-        client_id: process.env.CLIENT_ID,
-        data_center: process.env.DATA_CENTER
-    });
+    return res.send("UUUUUUUUU UO HOME PAGE AAAAGG")
 });
 
 app.get("/getblockedDates", async  (req, res) => {
