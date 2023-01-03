@@ -89,35 +89,31 @@ app.get("/token", async (req, res) =>
         return res.send("Something went wrong. Authcode undefined")
     }else{
         //Successfully got AuthCode
-        const AuthSettings = {
-            'AuthCode': authCode,
-        };
-
-        module.exports = AuthSettings;
         //res.send(authCode);
-        res.redirect("/reqToken")
+        res.redirect("/reqToken/"+authCode)
     }
 })
 
-app.get("/reqToken", async (req, res) =>{
+app.get("/reqToken/:authCode", async (req, res) =>{
     //Set to form data cuz microsoft does dumb shit
+    console.log(req.params.authCode)
     const bodyFormData = new FormData();
     bodyFormData.append('client_id', clientId);
     bodyFormData.append('grant_type', 'authorization_code');
     bodyFormData.append('scope', scopes);
-    bodyFormData.append('code', auth);
+    bodyFormData.append('code', req.params.authCode);
     bodyFormData.append('redirect_uri', 'http://localhost:3000/getToken');
 
 
     axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', bodyFormData)
         .then(function (response) {
             console.log(response);
-            res.send(response);
+            //res.send(response);
         })
         .catch(function (error) {
             console.log(error);
         });
-
+    res.send("Check log")
 })
 
 app.get
