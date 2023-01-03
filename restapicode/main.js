@@ -18,15 +18,16 @@ const clientSecret = process.env.CLIENT_SECRET;
 const scopes = process.env.GRAPH_USER_SCOPES;
 
 const request = require('request');
-
+const qs = require('qs');
 
 // Express rest api stuff
 const fs = require("fs/promises");
 const ld = require("lodash");
-const {v4: uuid} = require("uuid");
+const {v4: uuid, stringify} = require("uuid");
 const cors = require("cors");
 const express = require("express");
 const mysql = require("mysql");
+const {response} = require("express");
 
 const app = express();
 app.use(express.json());
@@ -53,7 +54,7 @@ app.get("/msAuth", async(req, res) => {
         +
         "&response_mode=query"
         +
-        "&scope=offline_access%20user.read%20mail.read"
+        "&scope=offline_access%20user.read%20mail.readwrite%20Calendars.ReadWrite"
         +
         "&state=12345"
     )
@@ -94,29 +95,45 @@ app.get("/token", async (req, res) =>
     }
 })
 
+let tokenData = ''
+function setTokenData(data){
+    tokenData = data;
+}
+
 app.get("/reqToken/:authCode", async (req, res) =>{
-    //Set to form data cuz microsoft does dumb shit
+    //Set to form data cuz it needs to be form data for some reason
     console.log(req.params.authCode)
-    const bodyFormData = new FormData();
-    bodyFormData.append('client_id', clientId);
-    bodyFormData.append('grant_type', 'authorization_code');
-    bodyFormData.append('scope', scopes);
-    bodyFormData.append('code', req.params.authCode);
-    bodyFormData.append('redirect_uri', 'http://localhost:3000/getToken');
+    const postData = {
+        client_id: clientId,
+        //scope: 'https://graph.microsoft.com/.default',
+        scope: 'https://graph.microsoft.com/user.read https://graph.microsoft.com/mail.readwrite https://graph.microsoft.com/calendars.readwrite',
+        code: req.params.authCode,
+        client_secret: clientSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: 'http://localhost:3000/token' //http%3A%2F%2Flocalhost%3A3000%2FgetToken
+    }
 
+    axios.defaults.headers.post['Content-Type'] =
+        'application/x-www-form-urlencoded';
 
-    axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', bodyFormData)
-        .then(function (response) {
-            console.log(response);
-            //res.send(response);
-        })
+    axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', qs.stringify(postData))
+        .then( response => {
+            setTokenData(response.data);
+            res.send(response.data.access_token);
+            })
         .catch(function (error) {
             console.log(error);
-        });
-    res.send("Check log")
+            res.send(error.response.data)
+        })
 })
 
-app.get
+app.get('/getToken/', (req, res) => {
+    console.log(req.params)
+})
+
+app.get('/curToken', async (req, res) => {
+    res.send(tokenData);
+})
 
 app.post("/add", async (req, res) => {
     const arraycont = req.body;
@@ -124,57 +141,47 @@ app.post("/add", async (req, res) => {
     res.send("Check console");
 });
 
-
-//gotta learn how to do this shit first so hold on
-//Learn get shit
-app.get("/outfit", (req, res) => {
-    const tops = ['gold', 'white', 'black']
-    const jeans = ['grey', 'gold', 'black']
-    const timbs = ['grey', 'gold', 'black']
-    res.json({
-        top: ld.sample(tops),
-        jeans: ld.sample(jeans),
-        timbs: ld.sample(timbs)
-    });
-});
-
-app.get("/comments/:id", async (req, res) => {
-    const id = req.params.id;
-    let content;
-
-    try {
-        content = await fs.readFile(`data/comments/${id}.txt`, "utf-8");
-    } catch (err) {
-        return res.sendStatus(404);
-    }
-    res.json({
-        content: content
-    })
-})
-
-//Learn how to post shit
-app.post("/comments", async (req, res) => {
-    const id = uuid();
-    const content = req.body.content;
-    if (!content) {
-        return res.sendStatus(400);
-    }
-
-    await fs.mkdir("data/comments", {recursive: true});
-    await fs.writeFile(`data/comments/${id}.txt`, content);
-
-    res.status(201).json({
-        id: id
-    });
-});
-
 app.get("/", async (req, res) => {
     return res.send("UUUUUUUUU UO HOME PAGE AAAAGG")
 });
 
-app.get("/getblockedDates", async  (req, res) => {
+//Always send auth headers: 'Authorization': `Basic ${token}`
+//more info here https://flaviocopes.com/axios-send-authorization-header/
+//test link: /getblockedDates/2023-01-04
+app.get("/getblockedDates/:date", async  (req, res) => {
+    console.log(req.params.date);
+    let date = req.params.date;
+    //send get request for events on date
+    axios.get('https://graph.microsoft.com/v1.0/me/calendarview?startdatetime='
+        + date + 'T00:00:00.000Z&'
+        + 'enddatetime=' + date + 'T23:59:59.000Z', {
+        headers: {
+            'Authorization': `Bearer ${tokenData.access_token}`,
+        }
+    }).then( response => {
+        res.send(response.data)
+    }).catch(function (error) {
+        console.log(error);
+        res.send(error.response)
+    })
+        //convert to usable data
+        //send data back - rendering will be handled with php or sumn'
 
 });
+
+app.get("/getUser", async (req, res) => {
+    axios.get('https://graph.microsoft.com/v1.0/me/', {
+        headers: {
+            Authorization: `Bearer ${tokenData.access_token}`,
+            Host: 'graph.microsoft.com'
+        }
+    }).then( response => {
+        res.send(response)
+    }).catch(function (error) {
+        console.log(error);
+        res.send(error.response.data)
+    })
+})
 
 app.get("/getEnv", async (req, res) => {
     res.json(settings);
