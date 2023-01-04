@@ -147,8 +147,11 @@ app.get("/", async (req, res) => {
 
 //Always send auth headers: 'Authorization': `Basic ${token}`
 //more info here https://flaviocopes.com/axios-send-authorization-header/
-//test link: /getblockedDates/2023-01-04
-app.get("/getblockedDates/:date", async  (req, res) => {
+//test link: /geteventsondate/2023-01-04
+app.get("/geteventsondate/:date", async  (req, res) => {
+    if (tokenData == ''){
+        return res.send('Error: Token has not been set yet')
+    }
     console.log(req.params.date);
     let date = req.params.date;
     //send get request for events on date
@@ -170,21 +173,23 @@ app.get("/getblockedDates/:date", async  (req, res) => {
 });
 
 app.get("/getUser", async (req, res) => {
+    if (tokenData == ''){
+        return res.send('Error: Token has not been set yet')
+    }
     axios.get('https://graph.microsoft.com/v1.0/me/', {
         headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
-            Host: 'graph.microsoft.com'
         }
     }).then( response => {
-        res.send(response)
+        res.send(response.data)
     }).catch(function (error) {
         console.log(error);
-        res.send(error.response.data)
+        res.send(error.response)
     })
 })
 
 app.get("/getEnv", async (req, res) => {
-    res.json(settings);
+    res.json(process.env);
 });
 
 app.post("/updateEnv", async (req, res) => {
