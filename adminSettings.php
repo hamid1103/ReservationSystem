@@ -1,4 +1,15 @@
 <?php
+/*// We need to use sessions, so you should always start sessions using the below code.
+session_start();
+// If the user is not logged in redirect to the login page...
+if (!isset($_SESSION['loggedin'])) {
+    header('Location: index.php');
+    exit;
+    //If user = not admin redirect to the login page...
+}elseif($_SESSION['name'] != 'admin'){
+    header('Location: index.php');
+    exit;
+}*/
 
 function callAPI($method, $url, $data){
     $curl = curl_init();
@@ -32,6 +43,15 @@ function callAPI($method, $url, $data){
     return $result;
 }
 
+//check status of restapi
+$get_data = callAPI('GET', 'http://localhost:3000/checkInit', false);
+$response = json_decode($get_data, true);
+if($response['auth'] == 'true'){
+
+}else{
+    header('Location: http://localhost:3000/msAuth');
+}
+
 ?>
 
 
@@ -53,22 +73,11 @@ $response = json_decode($get_data, true);
 
 ?>
 
-<form method="post" action="http://localhost:3000/updatePost" class="is-flex is-flex-direction-column">
     <label for="client_id">Client_ID</label>
-    <input type="text" name="client_id" id="client_id" value="<?= $response['clientId'] ?>">
+    <input type="text" name="client_id" id="client_id" value="<?= ['env']['CLIENT_ID'] ?>">
 
-    <label for="client_secret">Client_Secret</label>
-    <input type="text" name="client_secret" id="client_secret" value="<?= $response['clientSecret'] ?>">
-
-    <label for="sub">Sub</label>
-    <input type="text" name="sub" id="sub" value="<?= $response['sub'] ?>">
-
-    <label for="dataCenter">Data Center ID</label>
-    <input type="text" name="dataCenter" id="dataCenter" value="<?= $response['dataCenter'] ?>">
-
-    <label for="accessToken">Access Token</label>
-    <input type="text" name="accessToken" id="accessToken" value="<?= $response['accessToken'] ?>" >
-</form>
+    <label for="AUTH_TENANT">AUTH_TENANT</label>
+    <input type="text" name="AUTH_TENANT" id="AUTH_TENANT" value="<?= $response['env']['AUTH_TENANT'] ?>">
 
 </body>
 </html>

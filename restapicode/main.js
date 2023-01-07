@@ -28,6 +28,7 @@ const cors = require("cors");
 const express = require("express");
 const mysql = require("mysql");
 const {response} = require("express");
+const {value} = require("lodash/seq");
 
 const app = express();
 app.use(express.json());
@@ -127,6 +128,18 @@ app.get("/reqToken/:authCode", async (req, res) =>{
         })
 })
 
+app.get('/checkInit', (req, res) => {
+    if(tokenData == ''){
+        //if there is no token data
+            //redirect to msAuth
+        res.redirect("/msAuth")
+    }else {
+        res.json({
+            auth: 'true'
+        })
+    }
+})
+
 app.get('/getToken/', (req, res) => {
     console.log(req.params)
 })
@@ -147,7 +160,7 @@ app.get("/", async (req, res) => {
 
 //Always send auth headers: 'Authorization': `Basic ${token}`
 //more info here https://flaviocopes.com/axios-send-authorization-header/
-//test link: /geteventsondate/2023-01-04
+//test link: /geteventsondate/2023-01-09 or /geteventsondate/2023-01-04
 app.get("/geteventsondate/:date", async  (req, res) => {
     if (tokenData == ''){
         return res.send('Error: Token has not been set yet')
@@ -162,7 +175,23 @@ app.get("/geteventsondate/:date", async  (req, res) => {
             'Authorization': `Bearer ${tokenData.access_token}`,
         }
     }).then( response => {
-        res.send(response.data)
+        let index = 0;
+        var responseArray = []
+        const ResDat = response.data.value;
+        ResDat.forEach(obj => {
+            var curDate = {
+                index: index,
+                id: obj.id,
+                state: obj.showAs,
+                startTime: obj.start.dateTime.split("T"),
+                endTime: obj.end.dateTime.split("T")
+            }
+            responseArray.push(curDate);
+            /*console.log(curDate)
+            console.log(`-----------------------------`)*/
+            index += 1;
+        });
+        res.send(responseArray)
     }).catch(function (error) {
         console.log(error);
         res.send(error.response)
@@ -188,9 +217,26 @@ app.get("/getUser", async (req, res) => {
     })
 })
 
+app.get("/getSchedOn/:day", async (req, res) => {
+    if (tokenData == ''){
+        return res.send('Error: Token has not been set yet')
+    }
+
+    let date = req.params.day;
+})
+
 app.get("/getEnv", async (req, res) => {
-    res.json(process.env);
+    res.json(
+        {
+            env: process.env,
+            tokendata: tokenData
+        }
+    );
 });
+
+app.get("/manualRenew", async (req, res) => {
+
+})
 
 app.post("/updateEnv", async (req, res) => {
     const arraycont = req.body;

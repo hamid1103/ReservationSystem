@@ -55,6 +55,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Science Planner - Admin page</title>
     <link rel="stylesheet" href="css/mystyles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -98,27 +99,9 @@ try {
                 Documentation
             </a>
 
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                    More
-                </a>
-
-                <div class="navbar-dropdown">
-                    <a class="navbar-item">
-                        About
-                    </a>
-                    <a class="navbar-item">
-                        Jobs
-                    </a>
-                    <a class="navbar-item">
-                        Contact
-                    </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        Report an issue
-                    </a>
-                </div>
-            </div>
+            <a class="navbar-item" href="adminSettings.php">
+                <i icon-name="cog"></i>Settings
+            </a>
         </div>
 
         <div class="navbar-end">
