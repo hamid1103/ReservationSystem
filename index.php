@@ -101,6 +101,7 @@ try {
 <section class="is-flex is-flex-direction-row is-align-items-center is-justify-content-center">
     <!--Section left of form-->
     <div class="container p-3 mt-3">
+
     </div>
 
     <!--Form in the middle-->
@@ -132,7 +133,7 @@ try {
         </div>
         <div class="m-3">
             <label for="InputDate" class="form-label">Datum</label>
-            <input type="date" id="InputDate" class="form-control" name="date">
+            <input type="date" id="InputDate" class="form-control" onkeyup="showtime(this.value)" name="date">
         </div>
         <div class="m-3">
             <label for="InputTime" class="form-label">Tijd</label>
@@ -145,10 +146,15 @@ try {
 
     <!--section right of form-->
     <div class="container p-3 mt-3">
+        <div id="phpFrameHolder">
+
+        </div>
     </div>
 
 </section>
 
 
+
+<script type="text/javascript" src="js/timeshow.js"></script>
 </body>
 </html>

@@ -1,37 +1,64 @@
 <?php
-function callAPI($method, $url, $data){
-    $curl = curl_init();
-    switch ($method){
-        case "POST":
-            curl_setopt($curl, CURLOPT_POST, 1);
-            if ($data)
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            break;
-        case "PUT":
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-            if ($data)
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            break;
-        default:
-            if ($data)
-                $url = sprintf("%s?%s", $url, http_build_query($data));
-    }
-    // OPTIONS:
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-        'APIKEY: 111111111111111111111',
-        'Content-Type: application/json',
-    ));
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    // EXECUTE:
-    $result = curl_exec($curl);
-    if(!$result){die("Connection Failure");}
-    curl_close($curl);
-    return $result;
-}
 
 $date = $_GET['date'];
+$errorset = false;
+if (isset($_GET['error'])){
+    $error = $_GET['error'];
+    $errorset = true;
+}else{
+}
+$response = '';
+if($errorset){
 
-$get_data = callAPI('GET', 'http://localhost:3000/geteventsondate/' + $date, false);
-$response = json_decode($get_data, true);
+}else{
+    $url = "http://localhost:3000/geteventsondate/".$date;
+    //$url = `http://localhost:3000/geteventsondate/{$date}`;
+    $response = file_get_contents($url);
+    $decoded_json = json_decode($response, true);
+
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Science Planner</title>
+    <link rel="stylesheet" href="css/getTimes.css">
+</head>
+<body>
+
+<?php
+if ($errorset == false) {
+//voor elk event in response ( in volgorde )
+    //nieuwe div
+        //zet in div: timestart, timeend
+foreach ($decoded_json as $date){
+    ?>
+
+    <div class="time">
+        <p> Busy</p>
+        <p>from: <?php
+            $starttime = preg_split('/\./', $date['startTime'][1]);
+            print $starttime[0]
+            ?></p>
+        <p>to: <?php
+            $endtime = preg_split('/\./', $date['endTime'][1]);
+            print $endtime[0]
+            ?></p>
+    </div>
+
+    <?php
+}
+
+
+}else{
+    echo 'Error';
+    print_r($error);
+}
+
+?>
+
+</body>
+</html>

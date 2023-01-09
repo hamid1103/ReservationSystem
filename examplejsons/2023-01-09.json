@@ -1,0 +1,15 @@
+Array ( [
+  0
+] => stdClass Object ( [
+  index
+] => 0 [
+  id
+] => AQMkADAwATM3ZmYAZS01YzcxLTdjNjQtMDACLTAwCgBGAAADMJ6uJgzCFEGhCl3JrpaIvgcAEi6WYHKMo0W3es_CNdliKAAAAgENAAAAEi6WYHKMo0W3es_CNdliKAAAAAKEwFYAAAA= [
+  state
+] => busy [
+  startTime
+] => Array ( [
+  0
+] => 2023-01-09 [
+  1
+] => 07:00: 00.0000000 ) [endTime] => Array ( [0] => 2023-01-09 [1] => 07: 30: 00.0000000 ) ) [1] => stdClass Object ( [index] => 1 [id] => AQMkADAwATM3ZmYAZS01YzcxLTdjNjQtMDACLTAwCgBGAAADMJ6uJgzCFEGhCl3JrpaIvgcAEi6WYHKMo0W3es_CNdliKAAAAgENAAAAEi6WYHKMo0W3es_CNdliKAAAAAKEwFcAAAA= [state] => busy [startTime] => Array ( [0] => 2023-01-09 [1] => 10: 30: 00.0000000 ) [endTime] => Array ( [0] => 2023-01-09 [1] => 11: 00: 00.0000000 ) ) [2] => stdClass Object ( [index] => 2 [id] => AQMkADAwATM3ZmYAZS01YzcxLTdjNjQtMDACLTAwCgBGAAADMJ6uJgzCFEGhCl3JrpaIvgcAEi6WYHKMo0W3es_CNdliKAAAAgENAAAAEi6WYHKMo0W3es_CNdliKAAAAAKEwFgAAAA= [state] => busy [startTime] => Array ( [0] => 2023-01-09 [1] => 17: 30: 00.0000000 ) [endTime] => Array ( [0] => 2023-01-09 [1] => 18: 00: 00.0000000 ) ) )

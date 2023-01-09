@@ -160,7 +160,7 @@ app.get("/", async (req, res) => {
 
 //Always send auth headers: 'Authorization': `Basic ${token}`
 //more info here https://flaviocopes.com/axios-send-authorization-header/
-//test link: /geteventsondate/2023-01-09 or /geteventsondate/2023-01-04
+//test link: /geteventsondate/2023-01-09.json or /geteventsondate/2023-01-04
 app.get("/geteventsondate/:date", async  (req, res) => {
     if (tokenData == ''){
         return res.send('Error: Token has not been set yet')
@@ -181,7 +181,6 @@ app.get("/geteventsondate/:date", async  (req, res) => {
         ResDat.forEach(obj => {
             var curDate = {
                 index: index,
-                id: obj.id,
                 state: obj.showAs,
                 startTime: obj.start.dateTime.split("T"),
                 endTime: obj.end.dateTime.split("T")
@@ -223,6 +222,57 @@ app.get("/getSchedOn/:day", async (req, res) => {
     }
 
     let date = req.params.day;
+})
+
+app.post("/syncToLook/:subject/:name/:date/:time", async (req, res) => {
+    if (tokenData == ''){
+        return res.send('Error: Token has not been set yet')
+    }
+    const postData = {
+        "subject": "Let's go for lunch",
+        "body": {
+            "contentType": "HTML",
+            "content": "Does noon work for you?"
+        },
+        "start": {
+            "dateTime": "2017-04-15T12:00:00",
+            "timeZone": "Pacific Standard Time"
+        },
+        "end": {
+            "dateTime": "2017-04-15T14:00:00",
+            "timeZone": "Pacific Standard Time"
+        },
+        "location":{
+            "displayName":"Harry's Bar"
+        },
+        "attendees": [
+            {
+                "emailAddress": {
+                    "address":"samanthab@contoso.onmicrosoft.com",
+                    "name": "Samantha Booth"
+                },
+                "type": "required"
+            }
+        ],
+        "allowNewTimeProposals": true,
+        "transactionId":"7E163156-7762-4BEB-A1C6-729EA81755A7"
+    }
+
+    axios.post('https://graph.microsoft.com/v1.0/me/events', qs.stringify(postData), {
+        headers: {
+            'Authorization': `Bearer ${tokenData.access_token}`,
+            'Content-type': 'application/json'
+        }
+    })
+        .then( response => {
+            setTokenData(response.data);
+            res.send(response.data.access_token);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.send(error.response.data)
+        })
+
 })
 
 app.get("/getEnv", async (req, res) => {
