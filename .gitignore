@@ -1,5 +1,4 @@
 vendor/
 .env
-js/
 node_modules/
 restapicode/examples
