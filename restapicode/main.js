@@ -55,7 +55,7 @@ app.get("/msAuth", async(req, res) => {
         +
         "&response_mode=query"
         +
-        "&scope=offline_access%20user.read%20mail.readwrite%20Calendars.ReadWrite"
+        "&scope=offline_access%20user.read%20mail.send%20Calendars.ReadWrite"
         +
         "&state=12345"
     )
@@ -107,7 +107,7 @@ app.get("/reqToken/:authCode", async (req, res) =>{
     const postData = {
         client_id: clientId,
         //scope: 'https://graph.microsoft.com/.default',
-        scope: 'https://graph.microsoft.com/user.read https://graph.microsoft.com/mail.readwrite https://graph.microsoft.com/calendars.readwrite',
+        scope: 'https://graph.microsoft.com/user.read https://graph.microsoft.com/mail.send https://graph.microsoft.com/calendars.readwrite',
         code: req.params.authCode,
         client_secret: clientSecret,
         grant_type: 'authorization_code',
@@ -120,7 +120,7 @@ app.get("/reqToken/:authCode", async (req, res) =>{
     axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', qs.stringify(postData))
         .then( response => {
             setTokenData(response.data);
-            res.send(response.data.access_token);
+            res.send(response.data.access_token + " \n" + "<a href='/'>Link to hoemepage</a>");
             })
         .catch(function (error) {
             console.log(error);
@@ -200,7 +200,7 @@ app.get("/geteventsondate/:date", async  (req, res) => {
 
 });
 
-app.get("/getUser", async (req, res) => {
+/*app.get("/getUser", async (req, res) => {
     if (tokenData == ''){
         return res.send('Error: Token has not been set yet')
     }
@@ -214,7 +214,7 @@ app.get("/getUser", async (req, res) => {
         console.log(error);
         res.send(error.response)
     })
-})
+})*/
 
 app.get("/getSchedOn/:day", async (req, res) => {
     if (tokenData == ''){
@@ -224,52 +224,58 @@ app.get("/getSchedOn/:day", async (req, res) => {
     let date = req.params.day;
 })
 
-app.post("/syncToLook/:subject/:name/:date/:time", async (req, res) => {
+app.post("/syncToLook", async (req, res) => {
     if (tokenData == ''){
         return res.send('Error: Token has not been set yet')
     }
+
+    let subject = req.body.subject;
+    let name = req.body.name;
+    let email = req.body.email
+    let date = req.body.date;
+    let starttime = req.body.starttime + ":00";
+    let endtime = req.body.endtime + ":00";
+
     const postData = {
-        "subject": "Let's go for lunch",
+        "subject": "Reservation Confirmation",
         "body": {
             "contentType": "HTML",
-            "content": "Does noon work for you?"
+            "content": "Subject: " + subject + ". Date: " + date + " at " + starttime + ". Name: " + name
         },
         "start": {
-            "dateTime": "2017-04-15T12:00:00",
-            "timeZone": "Pacific Standard Time"
+            "dateTime": date+"T"+starttime,
+            "timeZone": "W. Europe Standard Time"
         },
         "end": {
-            "dateTime": "2017-04-15T14:00:00",
-            "timeZone": "Pacific Standard Time"
-        },
-        "location":{
-            "displayName":"Harry's Bar"
+            "dateTime": date+"T"+endtime,
+            "timeZone": "W. Europe Standard Time"
         },
         "attendees": [
             {
                 "emailAddress": {
-                    "address":"samanthab@contoso.onmicrosoft.com",
-                    "name": "Samantha Booth"
+                    "address":email,
+                    "name": name
                 },
                 "type": "required"
             }
         ],
         "allowNewTimeProposals": true,
-        "transactionId":"7E163156-7762-4BEB-A1C6-729EA81755A7"
+        "transactionId":subject + name + date + starttime + endtime
     }
+    console.log(req.body)
 
-    axios.post('https://graph.microsoft.com/v1.0/me/events', qs.stringify(postData), {
+    axios.post('https://graph.microsoft.com/v1.0/me/events', postData, {
         headers: {
             'Authorization': `Bearer ${tokenData.access_token}`,
             'Content-type': 'application/json'
         }
     })
         .then( response => {
-            setTokenData(response.data);
-            res.send(response.data.access_token);
+            res.send(response.data.id);
+            console.log(response.data.id);
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.response);
             res.send(error.response.data)
         })
 
@@ -290,5 +296,4 @@ app.get("/manualRenew", async (req, res) => {
 
 app.post("/updateEnv", async (req, res) => {
     const arraycont = req.body;
-
 })

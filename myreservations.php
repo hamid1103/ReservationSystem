@@ -71,7 +71,7 @@ try {
             <!--User icon-->
             <a class="navbar-item">
                 <p class="title">
-                    <?= $_SESSION['fullname']?>
+                    <?= htmlentities($_SESSION['fullname'])?>
                 </p>
             </a>
         <?php } ?>
@@ -173,31 +173,27 @@ try {
                     $stmt->execute();
                     $results = $stmt->fetchAll();
                     foreach ($results as $result){
-                        echo "<a href='details.php?id=".$result['id']."'>";
+                        echo "<a href='details.php?id=".htmlentities($result['id'])."'>";
                         echo "<div class='tdiv'>";
                         echo "<div class='rstdiv'>";
-                        echo $result['date'] . " " . $result['time'];
+                        echo htmlentities($result['date']) . " " . htmlentities($result['time']);
                         echo "</div>";
                         echo "<br>";
 
                         echo "<div class='rstdiv'>";
-                        echo $result['email'];
+                        echo htmlentities($result['number']);
                         echo "</div>";
                         echo "<br>";
 
                         echo "<div class='rstdiv'>";
-                        echo $result['number'];
+                        echo htmlentities($result['subject']);
                         echo "</div>";
                         echo "<br>";
 
-                        echo "<div class='rstdiv'>";
-                        echo $result['subject'];
-                        echo "</div>";
-                        echo "<br>";
-
-                        echo "<div class='rstdiv'>";
-                        echo $result['customer'];
-                        echo "</div>";
+                        echo "<form method='post' action='./details.php' class='inline'>";
+                        echo "<input type='hidden' name='id' value='".$result['id']."'>";
+                        echo "<button type='submit'> Details/Edit Reservation </button>";
+                        echo "</form>";
 
                         echo "</div>";
                         echo "</a>";

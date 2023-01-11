@@ -6,7 +6,7 @@ session_start();
 //Setup MySQL Connection
 $host = 'localhost';
 $user = 'root';
-$db = '';
+$db = 'reservatiesysteem';
 $pass = '';
 $port = "3306";
 $charset = 'utf8mb4';
@@ -53,7 +53,7 @@ try {
                 <!--User icon-->
                 <a class="navbar-item">
                     <p class="title">
-                        <?= $_SESSION['fullname']?>
+                        <?= htmlentities($_SESSION['fullname'])?>
                     </p>
                 </a>
         <?php } } ?>
@@ -107,11 +107,11 @@ try {
     <!--Form in the middle-->
 <div class="container p-3 mt-3">
     <form action="confirmation.php" method="post">
-        <div class="mb-3">
-            <label for="fullname" class="form-label">Full Name</label>
-            <input type="text" class="form-control" id="fullname" name="fullname">
-        </div>
         <?php if($loggedin == false) {?>
+        <div class="mb-3">
+           <label for="fullname" class="form-label">Full Name</label>
+           <input type="text" class="form-control" id="fullname" name="fullname">
+        </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="email" name="email">

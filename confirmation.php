@@ -1,10 +1,18 @@
 <?php
+session_start();
+$reqpassword = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $reqname = $_POST['fullname'];
-    $reqemail = $_POST['email'];
+    if(isset($_POST['email'])){
+        $reqname = $_POST['fullname'];
+        $reqemail = $_POST['email'];
+        $reqpassword = $_POST['password'];
+    }else{
+        $reqname = $_SESSION['fullname'];
+        $reqemail = $_SESSION['email'];
+        $reqpassword = $_SESSION['password'];
+    }
     $reqnumber = $_POST['number'];
     $reqsubject = $_POST['subject'];
-    $reqpassword = $_POST['password'];
     $reqdate = $_POST['date'];
     $reqtime = $_POST['time'];
     $resData = array(
@@ -18,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }else{
     $msg = 'Error: No query. Please make sure to use the form located in the homepage';
 }
+
 //front end php vars
 $msg = '';
 
@@ -42,6 +51,34 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+//add to outlook calendar - add +1 hour in the time and save as endtime
+//do this first to get the eventid
+$endtimeraw = strtotime($reqtime) + 60*60;
+$endtime = date('H:i', $endtimeraw);
+
+$url = "http://localhost:3000/syncToLook";
+$data = array(
+    'subject' => $reqsubject,
+    'name' => $reqname,
+    'date' => $reqdate,
+    'starttime' => $reqtime,
+    'endtime' => $endtime,
+    'email' => $reqemail,
+    'number' => $reqnumber
+);
+
+$options = array(
+    'http' => array(
+        'method'  => 'POST',
+        'content' => json_encode( $data ),
+        'header'=>  "Content-Type: application/json\r\n" .
+            "Accept: application/json\r\n"
+    )
+);
+
+$context  = stream_context_create( $options );
+$result = file_get_contents( $url, false, $context );
+$calendarresponse = json_decode( $result );
 
 
 //Check if an account with email already exists
@@ -53,27 +90,36 @@ $results = $sth->fetchAll();
 
 if($sth->rowCount() == 1){
     //IF account exists
-    //for now nothing
-    echo "Found a matching account for ". $reqemail;
     //get account email_id
-    echo $sth->rowCount();
     $email_id = $results[0]['id'];
-    echo $email_id;
 
-    //TODO: password check
-    //"This account already exists, and your password does not match"
-
-    //Make reservation into db
-    $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
+    //get password from user where email = $regemail
+    //check if logged in
+    if(isset($_SESSION['loggedin'])){
+        //if logged in, skip auth and just add to db with required emailID
+        $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $_SESSION['id']]);
+        $msg = "The reservation has been made, ".$_SESSION['fullname'];
+    }else{
+        //if not logged in -> $reqpassword would not be a hashed password
+        if(password_verify($reqpassword, $results[0]['password'])){
+            //Password is correct
+            $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
+            $msg = "The reservation has been made, ".$results[0]['fullname'];
+        }else{
+            //Password is incorrect
+            $msg = "The reservation has not been made. \n The password that was filled in is wrong. You can log in before making the reservation or try again.";
+        }
+    }
 }else{
-    echo "Making a account with " . $reqemail;
-    //If accoune does not exist(else)
+    //If account does not exist(else)
     //encrypt password
     $encpassword = password_hash($reqpassword, PASSWORD_DEFAULT);
     //make account
-    $sth = $pdo->prepare("INSERT INTO accounts (id, username, email, password, fullname) VALUES (NULL, ?, ?, ?, ?)");
+    $sth = $pdo->prepare("INSERT INTO accounts (username, email, password, fullname) VALUES (?, ?, ?, ?)");
     $sth->execute([$reqemail, $reqemail, $encpassword, $reqname]);
 
     //get emailid
@@ -83,33 +129,15 @@ if($sth->rowCount() == 1){
     $email_id = $results[0]['id'];
 
     //Make reservation into db
-    $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+    $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id, eventID) VALUES (?,?,?,?,?,?,?)";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
+    $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id, $result]);
     $msg = "We made an account for you! Use your provided email and password!";
 }
-//send mail shit - Implement later. We can use a google account or via ms graph or via some email helper
-/*
- * //The mail that's send will contain a file for adding reservation to own digital agenda and a link that will allow
- * // the customer to change/cancel their reservation
-$to = $reqemail;
-$from = 'sender@email.com';
-$fromName = 'ReservatieSysteem';
 
-$subject = "Confirmation";
+sleep(5);
 
-$message = "Hello, ".$reqname.".\nYour reservation has been made.";
-
-// Additional headers
-$headers = 'From: '.$fromName.'<'.$from.'>';
-
-// Send email
-if(mail($to, $subject, $message, $headers)){
-    echo 'Email has sent successfully.';
-}else{
-    echo 'Email sending failed.';
-}
-*/
+//echo $result
 
 ?>
 
@@ -131,11 +159,11 @@ if(mail($to, $subject, $message, $headers)){
             </p>
             <p class="subtitle">
                 <?php
-                echo "Name: " . $resData['name'] . "<br>";
-                echo "Date and Time: " . $resData['date'] . "   " . $resData['time'] . "<br>";
-                echo "Email: " . $resData['mail'] . "<br>";
-                echo "Mobile Number: " . $resData['number'] . "<br>";
-                echo "Subject: " . $resData['subject'] . "<br>";
+                echo "Name: " . htmlentities($resData['name']) . "<br>";
+                echo "Date and Time: " . htmlentities($resData['date']) . "   " . $resData['time'] . "<br>";
+                echo "Email: " . htmlentities($resData['mail']) . "<br>";
+                echo "Mobile Number: " . htmlentities($resData['number']) . "<br>";
+                echo "Subject: " . htmlentities($resData['subject']) . "<br>";
                 ?>
             </p>
         </div>

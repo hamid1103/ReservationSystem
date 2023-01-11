@@ -1,6 +1,5 @@
 <?php
 session_start();
-$reservation_id = $_GET['id'];
 
 //Setup MySQL Connection
 $host = 'localhost';
@@ -23,17 +22,57 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+$action = '';
+$msg = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $reservation_id = $_POST['id'];
+    if (isset($_POST['edit'])){
+        //als gaat edit
+        $action = 'edit';
+    }elseif (isset($_POST['submit'])){
+
+        //edit db
+
+        //set msg
+
+
+    }elseif (isset($_POST['remove'])){
+        $action = 'remove';
+    }elseif (isset($_POST['removed'])){
+        //remove from db
+        $query = "DELETE FROM reservaties WHERE id = ?";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$reservation_id]);
+        if($_SESSION['id']==6){
+            header('Location: admin.php');
+        }else{
+            header('Location: myreservations.php');
+        }
+    }
+    else{
+        //anders, laat normale pagina zien
+        $action = 'details';
+    }
+}elseif($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $action = 'error';
+    $msg = "Use post, not get. If you see this error message... sorry, please login and try again via 'my reservations'. ";
+}
+
 //get reservation data by id
 $sql = "SELECT * FROM reservaties WHERE id = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$reservation_id]);
 
 $reservation = $stmt->fetchAll();
+$resdets = $reservation[0];
 //check if current user has access to reservation data
-//if not
-if($_SESSION['id'] != $reservation[0]['email_id']){
-    header('Location: index.php');
+//if not, send back to myreservations
+if($_SESSION['id'] != '6'){
+    if ($_SESSION['id'] != $reservation[0]['email_id']){
+        header('Location: ./myreservations.php');
+    }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -125,9 +164,98 @@ if($_SESSION['id'] != $reservation[0]['email_id']){
     </div>
 </nav>
 
-<div class="reservation">
-    <?= print_r($reservation)?>
-</div>
+<?php if($action == 'details') { ?>
+    <div class="container-lg w-25 border border-dark p-3 mt-3">
+        <div class="has-text-centered">
+            <p class="title">
+                Confirmation of reservation data.
+            </p>
+            <p class="subtitle">
+                <!-- Date & time | Name | Subject | Number -->
+              <b>Date and time:</b> <?= $resdets['date']." ".$resdets['time']?> <br>
+                <b>Subject:</b> <?= $resdets['subject']." ".$resdets['time']?>
+            </p>
+            <!--<form method='post' action='' class='inline'>
+                <input type='hidden' name='id' value='<?php /*echo $reservation_id */?>'>
+                <input type='hidden' name='edit' value='1'>
+                <button type='submit'> Edit </button>
+            </form>-->
+            <form method='post' action='' class='inline'>
+                <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
+                <input type='hidden' name='remove' value='1'>
+                <button type='submit'> Remove </button>
+            </form>
+        </div>
+    </div>
 
+<?php } elseif ($action == 'edit') { ?>
+<section class="is-flex is-flex-direction-row is-align-items-center is-justify-content-center">
+    <div class="container-lg w-25 border border-dark p-3 mt-3">
+        <div class="has-text-centered">
+            <p class="title">
+                Editting
+            </p>
+            <form>
+                <div class="m-3">
+                    <label for="InputDate" class="form-label">Datum</label>
+                    <input type="date" id="InputDate" class="form-control" onkeyup="showtime(this.value)" value="<?= $resdets['date'] ?>" name="date">
+                </div>
+                <div class="m-3">
+                    <label for="InputTime" class="form-label">Tijd</label>
+                    <input type="time" id="InputTime" class="form-control" name="time" value="<?= $resdets['time'] ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="Subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="Subject"  value="<?= $resdets['subject'] ?>" name="subject">
+                </div>
+                <input type="submit" name="submit" id="submit">
+            </form>
+        </div>
+    </div>
+    <div class="container p-3 mt-3">
+        <div id="phpFrameHolder">
+
+        </div>
+    </div>
+</section>
+    <script type="text/javascript" src="js/timeshow.js"></script>
+<?php } elseif ($action == 'error'){?>
+
+        //error image
+
+    <div class="container-lg w-25 border border-dark p-3 mt-3">
+        <div class="has-text-centered">
+            <p class="title">
+                Error
+            </p>
+            <p class="subtitle">
+                <?php
+                echo $msg;
+                ?>
+            </p>
+        </div>
+    </div>
+
+<?php } elseif ($action == 'remove') { ?>
+    <div class="container-lg w-25 border border-dark p-3 mt-3">
+        <div class="has-text-centered">
+            <p class="title" style="color: red">
+                Are you sure you want to remove this reservation?
+            </p>
+            <p class="subtitle">
+                <!-- Date & time | Name | Subject | Number -->
+                <b>Date and time:</b> <?= $resdets['date']." ".$resdets['time']?> <br>
+                <b>Subject:</b> <?= $resdets['subject']." ".$resdets['time']?>
+            </p>
+            <form method='post' action='' class='inline'>
+                <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
+                <input type='hidden' name='removed' value='1'>
+                <button type='submit'> Confirm remove </button>
+            </form>
+        </div>
+    </div>
+<?php } elseif ($action == 'removed') { ?>
+
+<?php }?>
 </body>
 </html>

@@ -193,6 +193,11 @@ try {
                         echo $result['customer'];
                         echo "</div>";
 
+                        echo "<form method='post' action='./details.php' class='inline'>";
+                        echo "<input type='hidden' name='id' value='".$result['id']."'>";
+                        echo "<button type='submit'> Details/Edit Reservation </button>";
+                        echo "</form>";
+
                     echo "</div>";
                 }
 
