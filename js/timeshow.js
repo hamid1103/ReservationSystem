@@ -59,7 +59,7 @@ function showtime(date){
     }else {
         urlads = 'error=' + datetext;
     }
-
+    //TODO: add more safety checks, maybe a different pho for if date is invalid
     var ifrm = document.createElement("iframe");
     ifrm.setAttribute("src", baseurl + urlads);
     ifrm.style.width = "640px";
