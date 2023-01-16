@@ -55,30 +55,34 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Science Planner - Admin page</title>
     <link rel="stylesheet" href="css/mystyles.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/customs.css">
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar color_orange" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
 
         <?php
+        if (isset($_SESSION['loggedin'])) {
+            $loggedin = true;
             if ($_SESSION['name'] == 'admin') {?>
                 <!--User icon-->
                 <a class="navbar-item" href="admin.php">
                     <p class="title">
+                        <i icon-name="aperture"></i>
                         Admin
                     </p>
                 </a>
             <?php } else{ ?>
-                <!--User icon-->
+                <!--calendar icon-->
                 <a class="navbar-item">
                     <p class="title">
-                        <?= $_SESSION['name']?>
+                        <i icon-name="calendar-days"></i>
+                        <?= htmlentities($_SESSION['fullname'])?>
                     </p>
                 </a>
-            <?php } ?>
+            <?php } } ?>
 
 
 
@@ -96,7 +100,7 @@ try {
             </a>
 
             <a class="navbar-item">
-                Documentation
+                Documentation[N.A.]
             </a>
 
             <a class="navbar-item" href="adminSettings.php">
@@ -215,6 +219,9 @@ try {
 
 </section>
 
-
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

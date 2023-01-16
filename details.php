@@ -22,10 +22,18 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+
 $action = '';
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reservation_id = $_POST['id'];
+    //get reservation data by id
+    $sql = "SELECT * FROM reservaties WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$reservation_id]);
+    $reservation = $stmt->fetchAll();
+    $resdets = $reservation[0];
+
     if (isset($_POST['edit'])){
         //als gaat edit
         $action = 'edit';
@@ -40,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = 'remove';
     }elseif (isset($_POST['removed'])){
         //remove from db
+        $eventid = $resdets['eventID'];
         $query = "DELETE FROM reservaties WHERE id = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$reservation_id]);
@@ -58,13 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $msg = "Use post, not get. If you see this error message... sorry, please login and try again via 'my reservations'. ";
 }
 
-//get reservation data by id
-$sql = "SELECT * FROM reservaties WHERE id = ?";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([$reservation_id]);
 
-$reservation = $stmt->fetchAll();
-$resdets = $reservation[0];
 //check if current user has access to reservation data
 //if not, send back to myreservations
 if($_SESSION['id'] != '6'){
@@ -85,7 +88,7 @@ if($_SESSION['id'] != '6'){
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar color_orange" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
 
         <?php
@@ -95,14 +98,16 @@ if($_SESSION['id'] != '6'){
                 <!--User icon-->
                 <a class="navbar-item" href="admin.php">
                     <p class="title">
+                        <i icon-name="aperture"></i>
                         Admin
                     </p>
                 </a>
             <?php } else{ ?>
-                <!--User icon-->
+                <!--calendar icon-->
                 <a class="navbar-item">
                     <p class="title">
-                        <?= $_SESSION['fullname']?>
+                        <i icon-name="calendar-days"></i>
+                        <?= htmlentities($_SESSION['fullname'])?>
                     </p>
                 </a>
             <?php } } ?>
@@ -118,7 +123,7 @@ if($_SESSION['id'] != '6'){
 
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item">
+            <a class="navbar-item" href="index.php">
                 Home
             </a>
 
@@ -126,37 +131,20 @@ if($_SESSION['id'] != '6'){
                 My Reservations
             </a>
 
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                    More
-                </a>
+            <a class="navbar-item" href="contact.php">
+                Contact
+            </a>
 
-                <div class="navbar-dropdown">
-                    <a class="navbar-item">
-                        About
-                    </a>
-                    <a class="navbar-item">
-                        Jobs
-                    </a>
-                    <a class="navbar-item">
-                        Contact
-                    </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        Report an issue
-                    </a>
-                </div>
-            </div>
         </div>
 
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
                     <a class="button is-primary" href="logout.php">
-                        Logout
+                        <i icon-name="log-out"></i>Logout
                     </a>
                     <a class="button is-light" href="login.php">
-                        Log in
+                        <i icon-name="log-in"></i>Log in
                     </a>
                 </div>
             </div>
@@ -257,5 +245,10 @@ if($_SESSION['id'] != '6'){
 <?php } elseif ($action == 'removed') { ?>
 
 <?php }?>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

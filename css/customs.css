@@ -1,0 +1,47 @@
+.custnavbar{
+    background-color: orange;
+    min-height: 3.25rem;
+    position: relative;
+    z-index: 30;
+}
+
+.color_orange{
+    background-color: orange;
+}
+/*
+is-flex is-flex-direction-row is-align-content-center is-justify-content-center*/
+
+.indexThreeParts {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+
+.formrule{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-control{
+    background-color: white;
+    border: 2px solid #dadada;
+    border-radius: 7px;
+}
+
+.form-control:focus{
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
+@media (max-width: 480px) {
+    .indexThreeParts{
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+    }
+}
+

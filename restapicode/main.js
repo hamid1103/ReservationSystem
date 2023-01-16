@@ -35,6 +35,7 @@ app.use(express.json());
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
+    console.log("Please head to /msAuth to get a token")
 });
 
 //what an auth req should look like
@@ -97,8 +98,35 @@ app.get("/token", async (req, res) =>
 })
 
 let tokenData = ''
+let tokenSet = false;
 function setTokenData(data){
     tokenData = data;
+    tokenSet = true
+    //start repeated loop for getting new access token from refresh token
+    setInterval(async function (){
+        console.log("Refreshing token")
+        console.log("refresh token: " + tokenData.refresh_token)
+        console.log("access token expires in: " + tokenData.expires_in)
+            const postData = {
+                client_id: clientId,
+                refresh_token: tokenData.refresh_token,
+                client_secret: clientSecret,
+                grant_type: 'refresh_token',
+            }
+
+            axios.defaults.headers.post['Content-Type'] =
+                'application/x-www-form-urlencoded';
+
+            axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', qs.stringify(postData))
+                .then( response => {
+                    setTokenData(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+    },
+        (tokenData.expires_in - 100)*1000)
 }
 
 app.get("/reqToken/:authCode", async (req, res) =>{
@@ -296,4 +324,25 @@ app.get("/manualRenew", async (req, res) => {
 
 app.post("/updateEnv", async (req, res) => {
     const arraycont = req.body;
+})
+
+//DELETE https://graph.microsoft.com/v1.0/me/events/{id}
+
+app.get("/delEv/:id", async (req, res) => {
+    let id = req.params.id;
+
+    axios.get('DELETE https://graph.microsoft.com/v1.0/me/events/{id}', {
+        headers: {
+            'Authorization': `Bearer ${tokenData.access_token}`,
+        }
+    })
+        .then( response => {
+            res.send(response.data.id);
+            console.log(response.data.id);
+        })
+        .catch(function (error) {
+            console.log(error.response);
+            res.send(error.response.data)
+        })
+
 })

@@ -1,21 +1,20 @@
 <?php
-
-$date = $_GET['date'];
+$date = '';
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $date = $_GET['date'];
+}
 $errorset = false;
 if (isset($_GET['error'])){
-    $error = $_GET['error'];
     $errorset = true;
 }else{
 }
 $response = '';
 if($errorset){
-
+    $error = $_GET['error'];
 }else{
     $url = "http://localhost:3000/geteventsondate/".$date;
-    //$url = `http://localhost:3000/geteventsondate/{$date}`;
     $response = file_get_contents($url);
     $decoded_json = json_decode($response, true);
-
 }
 ?>
 
@@ -59,6 +58,9 @@ foreach ($decoded_json as $date){
 }
 
 ?>
-
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

@@ -36,6 +36,18 @@ var urlads = ''
 
 const frame = document.getElementById('phpFrameHolder')
 
+document.onload = function () {
+setplaceholder();
+}
+
+function setplaceholder(){
+    var ifrm = document.createElement("iframe");
+    ifrm.setAttribute("src", './placeholdertimes.php');
+    ifrm.style.width = "640px";
+    ifrm.style.height = "480px";
+    frame.appendChild(ifrm)
+}
+
 function showtime(date){
     var datetext = date.toString()
     while (frame.firstChild){

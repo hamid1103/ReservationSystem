@@ -33,30 +33,32 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Science Planner</title>
     <link rel="stylesheet" href="css/mystyles.css">
+    <link rel="stylesheet" href="css/customs.css">
 </head>
 <body>
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar color_orange" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
 
         <?php
         if (isset($_SESSION['loggedin'])) {
             $loggedin = true;
             if ($_SESSION['name'] == 'admin') {?>
-            <!--User icon-->
-            <a class="navbar-item" href="admin.php">
-                <p class="title">
-                    Admin
-                </p>
-            </a>
-        <?php } else{ ?>
                 <!--User icon-->
+                <a class="navbar-item" href="admin.php">
+                    <p class="title">
+                        <i icon-name="aperture"></i>
+                        Admin
+                    </p>
+                </a>
+            <?php } else{ ?>
+                <!--calendar icon-->
                 <a class="navbar-item">
                     <p class="title">
+                        <i icon-name="calendar-days"></i>
                         <?= htmlentities($_SESSION['fullname'])?>
                     </p>
                 </a>
-        <?php } } ?>
+            <?php } } ?>
 
 
 
@@ -69,7 +71,7 @@ try {
 
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item">
+            <a class="navbar-item" href="index.php">
                 Home
             </a>
 
@@ -77,7 +79,7 @@ try {
                 My Reservations
             </a>
 
-            <a class="navbar-item" href="contact.html">
+            <a class="navbar-item" href="contact.php">
                 Contact
             </a>
 
@@ -87,10 +89,10 @@ try {
             <div class="navbar-item">
                 <div class="buttons">
                     <a class="button is-primary" href="logout.php">
-                        Logout
+                        <i icon-name="log-out"></i>Logout
                     </a>
                     <a class="button is-light" href="login.php">
-                        Log in
+                        <i icon-name="log-in"></i>Log in
                     </a>
                 </div>
             </div>
@@ -108,46 +110,46 @@ try {
 <div class="container p-3 mt-3">
     <form action="confirmation.php" method="post">
         <?php if($loggedin == false) {?>
-        <div class="mb-3">
-           <label for="fullname" class="form-label">Full Name</label>
+        <div class="mb-3 formrule">
+           <label for="fullname" class="form-label">Full Name<i icon-name="contact"></i></label>
            <input type="text" class="form-control" id="fullname" name="fullname">
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
+        <div class="mb-3 formrule">
+            <label for="email" class="form-label">Email address<i icon-name="mails"></i></label>
             <input type="email" class="form-control" id="email" name="email">
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+        <div class="mb-3 formrule">
+            <label for="password" class="form-label">Password<i icon-name="key"></i></label>
             <input type="password" class="form-control" id="password" name="password">
             <div id="passwordHelp" class="form-text">This is the password you want to use for changing or cancelling your reservations.</div>
         </div>
         <?php } ?>
-        <div class="mb-3">
-            <label for="number" class="form-label">Mobile Number</label>
+        <div class="mb-3 formrule">
+            <label for="number" class="form-label">Mobile Number<i icon-name="phone"></i></label>
             <input type="number" class="form-control" id="number" name="number">
         </div>
-        <div class="mb-3">
-            <label for="Subject" class="form-label">Subject</label>
+        <div class="mb-3 formrule">
+            <label for="Subject" class="form-label">Subject<i icon-name="text-cursor"></i></label>
             <input type="text" class="form-control" id="Subject" name="subject">
         </div>
-        <div class="m-3">
-            <label for="InputDate" class="form-label">Datum</label>
+        <div class="mb-3 formrule">
+            <label for="InputDate" class="form-label">Datum<i icon-name="calendar"></i></label>
             <input type="date" id="InputDate" class="form-control" onkeyup="showtime(this.value)" name="date">
         </div>
-        <div class="m-3">
-            <label for="InputTime" class="form-label">Tijd</label>
+        <div class="mb-3 formrule">
+            <label for="InputTime" class="form-label">Tijd<i icon-name="timer"></i></label>
             <input type="time" id="InputTime" class="form-control" name="time">
         </div>
 
-        <input type="submit" name="submit" id="submit">
+        <input class="button is-primary" type="submit" name="submit" id="submit">
     </form>
 </div>
 
     <!--section right of form-->
     <div class="container p-3 mt-3">
         <div id="phpFrameHolder">
-
+            <iframe src="placeholdertimes.php" style="width: 640px; height: 480px;"></iframe>
         </div>
     </div>
 
@@ -156,5 +158,9 @@ try {
 
 
 <script type="text/javascript" src="js/timeshow.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

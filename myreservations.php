@@ -53,28 +53,33 @@ try {
     <title>Science Planner - Admin page</title>
     <link rel="stylesheet" href="css/mystyles.css">
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/customs.css">
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar color_orange" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
 
         <?php
-        if ($_SESSION['name'] == 'admin') {?>
-            <!--User icon-->
-            <a class="navbar-item" href="admin.php">
-                <p class="title">
-                    Admin
-                </p>
-            </a>
-        <?php } else{ ?>
-            <!--User icon-->
-            <a class="navbar-item">
-                <p class="title">
-                    <?= htmlentities($_SESSION['fullname'])?>
-                </p>
-            </a>
-        <?php } ?>
+        if (isset($_SESSION['loggedin'])) {
+            $loggedin = true;
+            if ($_SESSION['name'] == 'admin') {?>
+                <!--User icon-->
+                <a class="navbar-item" href="admin.php">
+                    <p class="title">
+                        <i icon-name="aperture"></i>
+                        Admin
+                    </p>
+                </a>
+            <?php } else{ ?>
+                <!--calendar icon-->
+                <a class="navbar-item">
+                    <p class="title">
+                        <i icon-name="calendar-days"></i>
+                        <?= htmlentities($_SESSION['fullname'])?>
+                    </p>
+                </a>
+            <?php } } ?>
 
 
 
@@ -91,41 +96,24 @@ try {
                 Home
             </a>
 
-            <a class="navbar-item">
-                Documentation
+            <a class="navbar-item" href="myreservations.php">
+                My Reservations
             </a>
 
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                    More
-                </a>
+            <a class="navbar-item" href="contact.php">
+                Contact
+            </a>
 
-                <div class="navbar-dropdown">
-                    <a class="navbar-item">
-                        About
-                    </a>
-                    <a class="navbar-item">
-                        Jobs
-                    </a>
-                    <a class="navbar-item">
-                        Contact
-                    </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        Report an issue
-                    </a>
-                </div>
-            </div>
         </div>
 
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
                     <a class="button is-primary" href="logout.php">
-                        Logout
+                        <i icon-name="log-out"></i>Logout
                     </a>
                     <a class="button is-light" href="login.php">
-                        Log in
+                        <i icon-name="log-in"></i>Log in
                     </a>
                 </div>
             </div>
@@ -133,7 +121,8 @@ try {
     </div>
 </nav>
 
-<section class="is-flex is-flex-direction-row is-align-content-center is-justify-content-center">
+
+<section class="indexThreeParts">
     <!--Section left of form-->
     <div class="container p-3 mt-3">
     </div>
@@ -213,6 +202,9 @@ try {
 
 </section>
 
-
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

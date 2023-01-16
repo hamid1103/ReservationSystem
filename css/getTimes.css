@@ -1,8 +1,14 @@
 body {
-    color: #4a4a4a;
+    color: papayawhip;
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+    border-radius: 7px;
     font-size: 1em;
     font-weight: 400;
-    line-height: 1.5; }
+    line-height: 1.5;
+
+}
 
 .time {
     font-family: "Titillium Web", sans-serif;
