@@ -33,6 +33,11 @@ if ($errorset == false) {
 //voor elk event in response ( in volgorde )
     //nieuwe div
         //zet in div: timestart, timeend
+    $divstyle = "font-family: 'Titillium Web', sans-serif;color: black;font-size: 1.2em;background-color: orange;border: #0d0d0d solid thick;position: fixed;top: 25%;left: 45%;width: 30vh;padding: 10px;";
+    echo "<div style=";
+    echo '"'.$divstyle.'">';
+    echo "<p>De rode blokjes laten zien op welke tijden ik niet beschikbaar ben.</p>";
+    echo "</div>";
 foreach ($decoded_json as $date){
     ?>
 
@@ -53,11 +58,12 @@ foreach ($decoded_json as $date){
 
 
 }else{
-    echo 'Error';
-    print_r($error);
+    echo `<div style="font-family: 'Titillium Web', sans-serif;color: black;font-size: 1.2em;background-color: orange;border: #0d0d0d solid thick;position: fixed;top: 25%;left: 45%;width: 30vh;padding: 10px;">
+    <p>$error mag niet. Vul een volledige datum in.</p>
+</div>`;
 }
-
 ?>
+
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <script>
     lucide.createIcons();
