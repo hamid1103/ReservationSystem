@@ -36,6 +36,10 @@ var urlads = ''
 
 const frame = document.getElementById('phpFrameHolder')
 
+const checkbox = document.getElementById('switch');
+const hoelang = document.getElementById('hoelang');
+
+
 document.onload = function () {
 setplaceholder();
 }

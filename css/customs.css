@@ -36,6 +36,48 @@ is-flex is-flex-direction-row is-align-content-center is-justify-content-center*
     box-shadow: 0 0 10px #9ecaed;
 }
 
+.custcheckbox{
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+.custcheckboxlabel {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 200px;
+    height: 100px;
+    background: grey;
+    display: block;
+    border-radius: 100px;
+    position: relative;
+}
+
+.custcheckboxlabel:after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 90px;
+    height: 90px;
+    background: #fff;
+    border-radius: 90px;
+    transition: 0.3s;
+}
+
+.custcheckbox:checked + .custcheckboxlabel {
+    background: #bada55;
+}
+
+.custcheckbox:checked + .custcheckboxlabel:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+}
+
+.custcheckboxlabel:active:after {
+    width: 130px;
+}
+
 @media (max-width: 480px) {
     .indexThreeParts{
         display: flex;
