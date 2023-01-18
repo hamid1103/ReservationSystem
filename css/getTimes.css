@@ -7,7 +7,19 @@ body {
     font-size: 1em;
     font-weight: 400;
     line-height: 1.5;
+}
 
+.explain{
+    font-family: "Titillium Web", sans-serif;
+    color: black;
+    font-size: 1.2em;
+    background-color: orange;
+    border: #0d0d0d solid thick;
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 30vh;
+    padding: 10px;
 }
 
 .time {

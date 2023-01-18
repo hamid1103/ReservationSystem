@@ -45,8 +45,16 @@ app.listen(3000, () => {
 &redirect_uri=http%3A%2F%2Flocalhost%2Fmyapp%2F
 &response_mode=query
 &scope=offline_access%20user.read%20mail.read
-&state=12345*/
+&state=12345
+let activeacs = 0;*/
 app.get("/msAuth", async(req, res) => {
+    /*if(req.params.ac < activeacs){
+
+    }else if(req.params.ac > activeacs){
+        for(let i = 0; i < (req.params.ac - activeacs); i++){
+            activeacs++;
+        }
+    }*/
     res.redirect("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?" +
         "client_id=" + clientId
         +
@@ -100,6 +108,7 @@ app.get("/token", async (req, res) =>
 let tokenData = ''
 let tokenSet = false;
 function setTokenData(data){
+    //add functionality for multi-account stuff
     tokenData = data;
     tokenSet = true
     //start repeated loop for getting new access token from refresh token

@@ -141,6 +141,21 @@ try {
             <label for="InputTime" class="form-label">Tijd<i icon-name="timer"></i></label>
             <input type="time" id="InputTime" class="form-control" name="time">
         </div>
+        <!--<div class="mb-3 formrule">
+            <div>
+            <input ontoggle="" type="checkbox" class="custcheckbox" id="switch" name="SetDuration"/><label class="custcheckboxlabel" for="switch">Wilt u zelf bepalen hoelang de afspraak duurt? (standaard is 1 uur)</label>
+            </div>
+        </div>
+        <div class="mb-3 formrule" id="hoelang">
+            <select name="duration">
+                <option value="0" disabled>Kies duratie:</option>
+                <option value="1">30 minuten</option>
+                <option value="2">1 uur</option>
+                <option value="3">1:30 uur</option>
+                <option value="4">2 uur</option>
+                <option value="5">langer</option>
+            </select>
+        </div>-->
 
         <input class="button is-primary" type="submit" name="submit" id="submit">
     </form>

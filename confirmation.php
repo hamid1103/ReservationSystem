@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reqsubject = $_POST['subject'];
     $reqdate = $_POST['date'];
     $reqtime = $_POST['time'];
+    if (isset($_POST['duration'])) $reqduration = $_POST['duration'];
     $resData = array(
         "name" => $reqname,
         "mail" => $reqemail,
@@ -59,6 +60,22 @@ if ($errorstate == true) {
 
 //add to outlook calendar - add +1 hour in the time and save as endtime
 //do this first to get the eventid
+    /*$endtimeraw = '';
+    switch ($reqduration){
+        case 1:
+            //30 minuten
+            $endtimeraw = strtotime($reqtime) + 30 * 60;
+            break;
+        case 2:
+            $endtimeraw = strtotime($reqtime) + 60 * 60; // 1 uur
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+    }*/
     $endtimeraw = strtotime($reqtime) + 60 * 60;
     $endtime = date('H:i', $endtimeraw);
 
