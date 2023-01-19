@@ -351,7 +351,6 @@ app.get("/delEv/:id", async (req, res) => {
         })
         .catch(function (error) {
             console.log(error.response);
-            res.send(error.response.data)
+            return res.send(error.response)
         })
-
 })
