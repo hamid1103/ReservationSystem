@@ -37,12 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['edit'])){
         //als gaat edit
         $action = 'edit';
-    }elseif (isset($_POST['submit'])){
+    }elseif (isset($_POST['edited'])){
+
+        //get post data
+        $date = $_POST['date'];
+        $time = $_POST['time'];
+        $subject = $_POST['subject'];
 
         //edit db
+        $sql = "UPDATE reservaties set date=? time=? subject=? where id=?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$date, $time, $subject, $reservation_id]);
 
         //set msg
-
+        $msg = 'Reservering is geweizigdt. ';
 
     }elseif (isset($_POST['remove'])){
         $action = 'remove';
@@ -54,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$reservation_id]);
 
         //call remove api call with eventID
+        $url = "http://localhost:3000/delEv/".$eventid;
+        $response = file_get_contents($url);
 
         if($_SESSION['id']==6){
             header('Location: admin.php');
@@ -181,6 +191,8 @@ if($_SESSION['id'] != '6'){
 
 <?php } elseif ($action == 'edit') { ?>
 <section class="is-flex is-flex-direction-row is-align-items-center is-justify-content-center">
+    <div class="container p-3 mt-3">
+    </div>
     <div class="container-lg w-25 border border-dark p-3 mt-3">
         <div class="has-text-centered">
             <p class="title">
@@ -199,6 +211,8 @@ if($_SESSION['id'] != '6'){
                     <label for="Subject" class="form-label">Subject</label>
                     <input type="text" class="form-control" id="Subject"  value="<?= $resdets['subject'] ?>" name="subject">
                 </div>
+                <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
+                <input type='hidden' name='edited' value='edited'>
                 <input type="submit" name="submit" id="submit">
             </form>
             <form method='post' action='' class='inline'>
