@@ -52,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "DELETE FROM reservaties WHERE id = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$reservation_id]);
+
+        //call remove api call with eventID
+
         if($_SESSION['id']==6){
             header('Location: admin.php');
         }else{
@@ -163,11 +166,11 @@ if($_SESSION['id'] != '6'){
               <b>Date and time:</b> <?= $resdets['date']." ".$resdets['time']?> <br>
                 <b>Subject:</b> <?= $resdets['subject']." ".$resdets['time']?>
             </p>
-            <!--<form method='post' action='' class='inline'>
-                <input type='hidden' name='id' value='<?php /*echo $reservation_id */?>'>
+            <form method='post' action='' class='inline'>
+                <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
                 <input type='hidden' name='edit' value='1'>
                 <button type='submit'> Edit </button>
-            </form>-->
+            </form>
             <form method='post' action='' class='inline'>
                 <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
                 <input type='hidden' name='remove' value='1'>
@@ -197,6 +200,10 @@ if($_SESSION['id'] != '6'){
                     <input type="text" class="form-control" id="Subject"  value="<?= $resdets['subject'] ?>" name="subject">
                 </div>
                 <input type="submit" name="submit" id="submit">
+            </form>
+            <form method='post' action='' class='inline'>
+                <input type='hidden' name='id' value='<?php echo $reservation_id ?>'>
+                <button type='submit'> Cancel Edit </button>
             </form>
         </div>
     </div>
