@@ -158,7 +158,7 @@ if ($errorstate == true) {
         $msg = "We made an account for you! Use your provided email and password!";
     }
 
-    sleep(5);
+    sleep(2);
 
 //echo $result
 }

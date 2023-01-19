@@ -45,12 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $subject = $_POST['subject'];
 
         //edit db
-        $sql = "UPDATE reservaties set date=? time=? subject=? where id=?";
+        $sql = "UPDATE reservaties SET date = :date, time = :time, subject = :subject WHERE id = :id";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$date, $time, $subject, $reservation_id]);
+        $stmt->bindParam(':id', $reservation_id, PDO::PARAM_INT);
+        $stmt->bindParam(':subject', $subject);
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':time', $time);
+        $stmt->execute();
 
-        //set msg
-        $msg = 'Reservering is geweizigdt. ';
+        if($_SESSION['id']==6){
+            header('Location: admin.php');
+        }else{
+            header('Location: myreservations.php');
+        }
 
     }elseif (isset($_POST['remove'])){
         $action = 'remove';
@@ -198,7 +205,7 @@ if($_SESSION['id'] != '6'){
             <p class="title">
                 Editting
             </p>
-            <form>
+            <form method="post" action="">
                 <div class="m-3">
                     <label for="InputDate" class="form-label">Datum</label>
                     <input type="date" id="InputDate" class="form-control" onkeyup="showtime(this.value)" value="<?= $resdets['date'] ?>" name="date">
