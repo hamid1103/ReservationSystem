@@ -120,17 +120,17 @@ if ($errorstate == true) {
         //check if logged in
         if (isset($_SESSION['loggedin'])) {
             //if logged in, skip auth and just add to db with required emailID
-            $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+            $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id, eventID) VALUES (?,?,?,?,?,?,?)";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $_SESSION['id']]);
+            $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $_SESSION['id'], $result]);
             $msg = "The reservation has been made, " . $_SESSION['fullname'];
         } else {
             //if not logged in -> $reqpassword would not be a hashed password
             if (password_verify($reqpassword, $results[0]['password'])) {
                 //Password is correct
-                $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id) VALUES (?,?,?,?,?,?)";
+                $sql = "INSERT INTO reservaties (date, time, number, subject, customer, email_id, eventID) VALUES (?,?,?,?,?,?,?)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id]);
+                $stmt->execute([$reqdate, $reqtime, $reqnumber, $reqsubject, $reqname, $email_id,$result]);
                 $msg = "The reservation has been made, " . $results[0]['fullname'];
             } else {
                 //Password is incorrect
