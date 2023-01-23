@@ -76,7 +76,7 @@ try {
             </a>
 
             <a class="navbar-item" href="myreservations.php">
-                My Reservations
+                Mijn Reserveringen
             </a>
 
             <a class="navbar-item" href="contact.php">
@@ -111,7 +111,7 @@ try {
     <form action="confirmation.php" method="post">
         <?php if($loggedin == false) {?>
         <div class="mb-3 formrule">
-           <label for="fullname" class="form-label">Full Name<i icon-name="contact"></i></label>
+           <label for="fullname" class="form-label">Volledige naam<i icon-name="contact"></i></label>
            <input type="text" class="form-control" id="fullname" name="fullname">
         </div>
         <div class="mb-3 formrule">
@@ -120,17 +120,17 @@ try {
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3 formrule">
-            <label for="password" class="form-label">Password<i icon-name="key"></i></label>
+            <label for="password" class="form-label">Wachtwoord<i icon-name="key"></i></label>
             <input type="password" class="form-control" id="password" name="password">
             <div id="passwordHelp" class="form-text">This is the password you want to use for changing or cancelling your reservations.</div>
         </div>
         <?php } ?>
         <div class="mb-3 formrule">
-            <label for="number" class="form-label">Mobile Number<i icon-name="phone"></i></label>
+            <label for="number" class="form-label">Telefoon Nummer<i icon-name="phone"></i></label>
             <input type="number" class="form-control" id="number" name="number">
         </div>
         <div class="mb-3 formrule">
-            <label for="Subject" class="form-label">Subject<i icon-name="text-cursor"></i></label>
+            <label for="Subject" class="form-label">Onderwerp<i icon-name="text-cursor"></i></label>
             <input type="text" class="form-control" id="Subject" name="subject">
         </div>
         <div class="mb-3 formrule">
