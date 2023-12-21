@@ -3,9 +3,9 @@ session_start();
 
 //Setup MySQL Connection
 $host = 'localhost';
-$user = 'root';
-$db = 'reservatiesysteem';
-$pass = '';
+$user = '1062604';
+$db = '1062604';
+$pass = 'iefeikae';
 $port = "3306";
 $charset = 'utf8mb4';
 
